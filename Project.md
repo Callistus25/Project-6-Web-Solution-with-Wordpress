@@ -41,6 +41,11 @@ The connectivity procedure are;
 You can use command ``df -h`` to view the all mounts and free spaces on your server.
 ![alt](./Images/df%20-h.JPG)
 
-- 
+- Use gdisk utility to create a single partition on each of the 3 disks `xvdf, xvdh, xvdg`.
+```
+sudo gdisk /dev/xvdf
+```
+![alt](./Images/sudo%20Gdisk.JPG)
+ Note: You need to repeat this for each of the xvdf, xvdg, xvdh voulmes.
 
 
