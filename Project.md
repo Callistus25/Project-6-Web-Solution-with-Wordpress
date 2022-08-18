@@ -26,4 +26,10 @@ The connectivity procedure are;
 3. An EC2 Linux server as a database (DB) server.
 
 ### Step 1 —  LAUNCH AN EC2 INSTANCE THAT WILL SERVE AS “WEB SERVER by preparing a Web Server. ###
--Launch an EC2 instance that will serve as "Web Server". Create 3 volumes in the same AZ as your Web Server EC2, each of 10 GiB.
+-Launch an EC2 instance that will serve as "Web Server".
+![alt](./Images/Redhat%20EC2.JPG)
+
+- Create 3 volumes in the same availability zone as your Web Server EC2, each of 10 GiB.
+![alt](./Images/3%20Volumes%20creation.JPG)
+
+- 
