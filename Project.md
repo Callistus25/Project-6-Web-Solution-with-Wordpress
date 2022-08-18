@@ -26,10 +26,21 @@ The connectivity procedure are;
 3. An EC2 Linux server as a database (DB) server.
 
 ### Step 1 —  LAUNCH AN EC2 INSTANCE THAT WILL SERVE AS “WEB SERVER by preparing a Web Server. ###
--Launch an EC2 instance that will serve as "Web Server".
+-Launch an EC2 instance that will serve as "Web Server" using Redhat OS.
 ![alt](./Images/Redhat%20EC2.JPG)
 
 - Create 3 volumes in the same availability zone as your Web Server EC2, each of 10 GiB.
 ![alt](./Images/3%20Volumes%20creation.JPG)
 
+- Attach all three volumes one by one to your Web Server EC2 instance you created. Please ensure that the availability zones are same.
+![alt](./Images/Attaching%20volumes.JPG)
+
+-Launch instance and SSH into the terminal. Use ``lsblk`` command to inspect what block devices are attached to the server. All devices in Linux reside in /dev/ directory. Inspect it with ls /dev/ and files name will be `xvdf, xvdh, xvdg`. 
+![alt](./Images/Lsblk.JPG)
+
+You can use command ``df -h`` to view the all mounts and free spaces on your server.
+![alt](./Images/df%20-h.JPG)
+
 - 
+
+
