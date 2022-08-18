@@ -46,6 +46,57 @@ You can use command ``df -h`` to view the all mounts and free spaces on your ser
 sudo gdisk /dev/xvdf
 ```
 ![alt](./Images/sudo%20Gdisk.JPG)
- Note: You need to repeat this for each of the xvdf, xvdg, xvdh voulmes.
+ Note: You need to repeat this for each of the xvdf, xvdg, xvdh voulmes using hex code '8E00'.
+
+ - Use lsblk utility to view the newly configured partition on each of the 3 disks.
+ ![alt](./Images/Lsblk%20after%20partioning.JPG)
+
+ - Install *lvm2* package using the below command; 
+ ```
+ sudo yum install lvm2
+ ```
+
+ - Run the below command to check for available partitions.
+ ```
+ sudo lvmdiskscan
+ ``` 
+![alt](./Images/sudo%20lvmdiskscan.JPG)
+
+- Use ``pvcreate`` utility to mark each of 3 disks as physical volumes (PVs) to be used by LVM.
+```
+sudo pvcreate /dev/xvdf1
+sudo pvcreate /dev/xvdg1
+sudo pvcreate /dev/xvdh1
+```
+![alt](./Images/Sudo%20Pvcreate.JPG)
+
+- Verify that your Physical volume has been created successfully by running below command;
+```
+sudo pvs
+```
+![alt](./Images/Sudo%20Pvs.JPG)
+
+- Use ``vgcreate`` utility to add all 3 PVs to a volume group (VG). Name the VG webdata-vg. Verify that your VG has been created successfully by running ``sudo vgs``
+
+```
+sudo vgcreate webdata-vg /dev/xvdh1 /dev/xvdg1 /dev/xvdf1
+sudo vgs
+```
+![alt](./Images/Sudo%20vcreate%20and%20Sudo%20vgs.JPG)
+
+- Use lvcreate utility to create 2 logical volumes. apps-lv(website data storage) and logs-lv(log data storage)
+```
+sudo lvcreate -n apps-lv -L 14G webdata-vg
+sudo lvcreate -n logs-lv -L 14G webdata-vg
+```
+![alt](./Images/Apps%20and%20logs%20storage%20creation.JPG)
+
+- Verify that your Logical Volume has been created successfully.
+```
+sudo lvs
+```
+ ![alt](./Images/sudo%20lvs.JPG)
+ 
+
 
 
