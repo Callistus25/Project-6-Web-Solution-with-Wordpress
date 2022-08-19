@@ -41,14 +41,14 @@ The connectivity procedure are;
 You can use command ``df -h`` to view the all mounts and free spaces on your server.
 ![alt](./Images/df%20-h.JPG)
 
-- Use gdisk utility to create a single partition on each of the 3 disks `xvdf, xvdh, xvdg`.
+- Use `gdisk` utility to create a single partition on each of the 3 disks `xvdf, xvdh, xvdg`.
 ```
 sudo gdisk /dev/xvdf
 ```
 ![alt](./Images/sudo%20Gdisk.JPG)
  Note: You need to repeat this for each of the xvdf, xvdg, xvdh voulmes using hex code '8E00'.
 
- - Use lsblk utility to view the newly configured partition on each of the 3 disks.
+ - Use `lsblk` utility to view the newly configured partition on each of the 3 disks.
  ![alt](./Images/Lsblk%20after%20partioning.JPG)
 
  - Install *lvm2* package using the below command; 
@@ -84,7 +84,7 @@ sudo vgs
 ```
 ![alt](./Images/Sudo%20vcreate%20and%20Sudo%20vgs.JPG)
 
-- Use lvcreate utility to create 2 logical volumes. apps-lv(website data storage) and logs-lv(log data storage)
+- Use `lvcreate` utility to create 2 logical volumes. apps-lv(website data storage) and logs-lv(log data storage)
 ```
 sudo lvcreate -n apps-lv -L 14G webdata-vg
 sudo lvcreate -n logs-lv -L 14G webdata-vg
@@ -96,7 +96,96 @@ sudo lvcreate -n logs-lv -L 14G webdata-vg
 sudo lvs
 ```
  ![alt](./Images/sudo%20lvs.JPG)
+
+ - Verify the entire setup
+ ```
+sudo vgdisplay -v #view complete setup - VG, PV, and LV
+sudo lsblk
+```
+![alt](./Images/Verify%20setup%201.JPG)
+
+![alt](./Images/Verify%20setup%202.JPG)
+
+![alt](./Images/sudo%20lsblk.JPG)
+
+- Use ``mkfs.ext4`` to format the logical volumes with `ext4` filesystem.
+```
+sudo mkfs -t ext4 /dev/webdata-vg/apps-lv
+sudo mkfs -t ext4 /dev/webdata-vg/logs-lv
+```
+![alt](./Images/Sudo%20ext4.JPG)
+
+- Create `/var/www/html` directory to store website files and create `/home/recovery/logs` to store backup of log data, then Mount `/var/www/html` on apps-lv logical volume. afterwards, Use ``rsync`` utility to backup all the files in the log directory `/var/log` into `/home/recovery/logs`
+```
+sudo mkdir -p /var/www/html
+sudo mkdir -p /home/recovery/logs
+sudo mount /dev/webdata-vg/apps-lv /var/www/html/
+sudo rsync -av /var/log/. /home/recovery/logs/
+```
+![alt](./Images/Sudo%20log%20directory%20creation.JPG)
+
+- Mount `/var/log` on logs-lv logical volume and restore log files back into `/var/log` directory.
+```
+sudo mount /dev/webdata-vg/logs-lv /var/log
+sudo rsync -av /home/recovery/logs/. /var/log
+```
+![alt](./Images/Mount%20logs%20on%20logical%20volume.JPG)
+
+- Update `/etc/fstab` file so that the mount configuration will persist after restart of the server. The UUID of the device will be used to update the `/etc/fstab` file.
+```
+sudo blkid
+```
+![alt](./Images/Sudo%20blkid.JPG)
+
+- Edit the `etc/fstab` file and add the UUID of both apps and logs volumes.
+```
+sudo vi /etc/fstab
+cat /etc/fstab
+```
+![alt](./Images/Updated%20fstab.JPG)
+
+- Test the configuration, reload the daemon and verify setup.
+```
+ sudo mount -a
+ sudo systemctl daemon-reload
+ df -h
+ ```
+ ![alt](./Images/Reload%20daemon%20and%20verify%20setup.JPG)
+
+ ## Step 2 — Prepare the Database Server ##
+
+ - Launch a second RedHat EC2 instance that will have a role – ‘DB Server’, creat 3 volumes and attached to the instance
+ ![alt](./Images/DB%20server.JPG)
+
+
+ - Repeat all the same steps as was done during "webserver' creation, but instead of `apps-lv` create `db-lv` and mount it to ``/db directory`` instead of ``/var/www/html/``.
+ ![alt](./Images/DB%20server%201.JPG)
+
+ ![alt](./Images/DB%20server%202.JPG)
+
+ ![alt](./Images/DB%20server%203.JPG)
+
+ -Creating db logical volumes.
+ ![alt](./Images/db%20server%20db-ls.JPG)
+
+ - Formating db Logical voulmes
+ ![alt](./Images/Db%20server%20Formating%20logical%20volumes.JPG)
+
+ - Mounting db logical volumes
+ ![alt](./Images/Db%20server%20Mount.JPG)
+
+ - Making db-lv persitent
+ ![alt](./Images/Making%20db-lv%20persistent.JPG)
+
  
+
+
+
+
+
+
+
+
 
 
 
