@@ -26,7 +26,7 @@ The connectivity procedure are;
 3. An EC2 Linux server as a database (DB) server.
 
 ### Step 1 —  LAUNCH AN EC2 INSTANCE THAT WILL SERVE AS “WEB SERVER by preparing a Web Server. ###
--Launch an EC2 instance that will serve as "Web Server" using Redhat OS.
+- Launch an EC2 instance that will serve as "Web Server" using Redhat OS.
 ![alt](./Images/Redhat%20EC2.JPG)
 
 - Create 3 volumes in the same availability zone as your Web Server EC2, each of 10 GiB.
@@ -35,7 +35,7 @@ The connectivity procedure are;
 - Attach all three volumes one by one to your Web Server EC2 instance you created. Please ensure that the availability zones are same.
 ![alt](./Images/Attaching%20volumes.JPG)
 
--Launch instance and SSH into the terminal. Use ``lsblk`` command to inspect what block devices are attached to the server. All devices in Linux reside in /dev/ directory. Inspect it with ls /dev/ and files name will be `xvdf, xvdh, xvdg`. 
+- Launch instance and SSH into the terminal. Use ``lsblk`` command to inspect what block devices are attached to the server. All devices in Linux reside in /dev/ directory. Inspect it with ls /dev/ and files name will be `xvdf, xvdh, xvdg`. 
 ![alt](./Images/Lsblk.JPG)
 
 You can use command ``df -h`` to view the all mounts and free spaces on your server.
@@ -48,10 +48,10 @@ sudo gdisk /dev/xvdf
 ![alt](./Images/sudo%20Gdisk.JPG)
  Note: You need to repeat this for each of the xvdf, xvdg, xvdh voulmes using hex code '8E00'.
 
- - Use `lsblk` utility to view the newly configured partition on each of the 3 disks.
+- Use `lsblk` utility to view the newly configured partition on each of the 3 disks.
  ![alt](./Images/Lsblk%20after%20partioning.JPG)
 
- - Install *lvm2* package using the below command; 
+- Install *lvm2* package using the below command; 
  ```
  sudo yum install lvm2
  ```
@@ -215,7 +215,7 @@ sudo systemctl start php-fpm
 sudo systemctl enable php-fpm
 setsebool -P httpd_execmem 1
 ```
--Restart Apache
+- Restart Apache
 ```
 sudo systemctl restart httpd
 ```
@@ -284,8 +284,36 @@ SHOW DATABASES;
 
 - Change permissions and configuration so Apache could use WordPress:
 ```
+cd /var/www/html/wordpress/
+sudo chown -R apache:apache /var/www/html/wordpress
+sudo chcon -t httpd_sys_rw_content_t /var/www/html/wordpress -R
+sudo setsebool -P httpd_can_network_connect=1
+```
+Reconfirm that authorisation has been shifted from `root` to `Apache`
+```
+cd /var/www/html/wordpress
+ls -l
+```
+![alt](./Images/Ls%20-l.JPG)
 
+- Config the database name, username and password of the database created on DB server, and also the private IP address of the DB server as highlighted below.
 
+```
+cd /var/www/html/wordpress/
+sudo vi wp-config.php
+```
+![alt](./Images/sudo%20vi%20wp-config.JPG)
+
+- Open TCP port 80 in Inbound Rules configuration for the Web Server EC2.
+
+![alt](./Images/Inbound%20rule.JPG)
+
+- Access the wordpress through browsing using the public IP address of the webserver as shown: ``http://<Web-Server-Public-IP-Address>/wordpress/``
+
+![alt](./Images/Wordpress%20Page.JPG)
+
+- Fill out the page with site tilte, username, password and email address, then click "install wordpress"
+![alt](./Images/Wprdpress%20Installation.JPG) 
 
 
 
