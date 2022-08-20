@@ -308,12 +308,14 @@ sudo vi wp-config.php
 
 ![alt](./Images/Inbound%20rule.JPG)
 
-- Access the wordpress through browsing using the public IP address of the webserver as shown: ``http://<Web-Server-Public-IP-Address>/wordpress/``
+- Access the wordpress through browser using the public IP address of the webserver as shown: `http://<Web-Server-Public-IP-Address>/wordpress/`
 
 ![alt](./Images/Wordpress%20Page.JPG)
 
 - Fill out the page with site tilte, username, password and email address, then click "install wordpress"
-![alt](./Images/Wprdpress%20Installation.JPG) 
+
+![alt](./Images/Wordpress%20Installation.JPG) 
+
 
 
 
